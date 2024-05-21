@@ -34,7 +34,7 @@ router.post("/signup", (req, res) => {
         lastname: req.body.lastname,
         email: req.body.email,
         city: req.body.city,
-        birthDate: req.body.birthDate,
+        birthDate: new Date(req.body.birthDate),
         role: req.body.role,
         password: hash,
         token: uid2(32),
@@ -86,7 +86,7 @@ router.post("/signup/animal/:token", (req, res) => {
   }
   const newProfilAnimal = new Animal({
     name: req.body.name,
-    birthDate: req.body.birthDate,
+    birthDate: new Date(req.body.birthDate),
     animalType: req.body.animalType,
     gender: req.body.gender,
     bio: req.body.bio,
