@@ -2,7 +2,7 @@ var express = require("express");
 var router = express.Router();
 
 require("../models/connection");
-const Profil = require("../models/profils");
+const { Profil, Animal } = require("../models/profils");
 const { checkBody } = require("../modules/checkbody");
 const bcrypt = require("bcrypt");
 const uid2 = require("uid2");
@@ -16,7 +16,7 @@ router.post("/signup", (req, res) => {
       "password",
       "role",
       "city",
-      // "birthDate",
+      "birthDate",
     ])
   ) {
     res.json({ result: false, error: "Missing or empty fields" });
@@ -34,7 +34,7 @@ router.post("/signup", (req, res) => {
         lastname: req.body.lastname,
         email: req.body.email,
         city: req.body.city,
-        // birthDate: req.body.birthDate,
+        birthDate: req.body.birthDate,
         role: req.body.role,
         password: hash,
         token: uid2(32),
@@ -63,7 +63,6 @@ router.post("/signin", (req, res) => {
         email: data.email,
         firstname: data.firstname,
         lastname: data.lastname,
-        city: data.city,
       });
     } else {
       res.json({ result: false, error: "User not found or wrong password" });
@@ -71,44 +70,49 @@ router.post("/signin", (req, res) => {
   });
 });
 
-// router.post("/signup/animal", (req, res) => {
-//   if (
-//     !checkBody(req.body, [
-//       "name",
-//       "birthDate",
-//       "animalType",
-//       "gender",
-//       "bio",
-//       "detail",
-//     ])
-//   ) {
-//     res.json({ result: false, error: "Missing or empty fields" });
-//     return;
-//   }
+router.post("/signup/animal/:token", (req, res) => {
+  if (
+    !checkBody(req.body, [
+      "name",
+      "birthDate",
+      "animalType",
+      "gender",
+      "bio",
+      "detail",
+    ])
+  ) {
+    res.json({ result: false, error: "Missing or empty fields" });
+    return;
+  }
+  const newProfilAnimal = new Animal({
+    name: req.body.name,
+    birthDate: req.body.birthDate,
+    animalType: req.body.animalType,
+    gender: req.body.gender,
+    bio: req.body.bio,
+    detail: req.body.detail,
+    photo: req.body.photo,
+  });
+  console.log(newProfilAnimal);
 
-//   Profil.updateOne({
-//     email: { $regex: new RegExp(req.body.email, "i") },
-//   }).then((data) => {
-//     if (data === null) {
-//       const hash = bcrypt.hashSync(req.body.password, 10);
+  Profil.updateOne(
+    {
+      token: req.params.token,
+    },
+    { $push: { profilAnimal: newProfilAnimal } }
+  ).then((newDoc) => {
+    res.json({ result: true, token: newDoc.token });
+  });
+});
 
-//       const newProfilAnimal = new Profil({
-//         name: req.body.name,
-//         birthDate: req.body.birthDate,
-//         animalType: req.body.animalType,
-//         gender: req.body.gender,
-//         bio: req.body.bio,
-//         detail: req.body.detail,
-//         photo: req.body.photo,
-//       });
-
-//       newProfilAnimal.save().then((newDoc) => {
-//         res.json({ result: true, token: newDoc.token });
-//       });
-//     } else {
-//       res.json({ result: false, error: "User already exists" });
-//     }
-//   });
-// });
+router.get("/infos/:token", (req, res) => {
+  Profil.findOne({ token: req.params.token })
+    .then((data) => {
+      res.json({ result: true, data });
+    })
+    .catch((error) => {
+      res.json({ result: false, error: error.message });
+    });
+});
 
 module.exports = router;
