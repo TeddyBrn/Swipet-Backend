@@ -1,32 +1,36 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const photoSchema = mongoose.Schema({
-    url: String,
-    created_at: Date,
+  url: String,
+  created_at: Date,
 });
 
 const profilAnimalSchema = mongoose.Schema({
-    name: String,
-    age: Number,
-    animalType: String,
-    gender: String,
-    bio: String,
-    detail: String,
-    photo: [photoSchema],
- });
+  name: String,
+  birthDate: Date,
+  animalType: {
+    type: String,
+    enum: ["chien", "chat", "lapin"],
+    required: true,
+  },
+  gender: { type: String, enum: ["male", "female"], required: true },
+  bio: String,
+  detail: String,
+  photo: [photoSchema],
+});
 
- const avisSchema = mongoose.Schema({
-    note: Number,
-    content: String,
-    created_at: Date,
-    user_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'profils' }]
- });
+const avisSchema = mongoose.Schema({
+  note: Number,
+  content: String,
+  created_at: Date,
+  user_id: [{ type: mongoose.Schema.Types.ObjectId, ref: "profils" }],
+});
 
- const historiqueSchema = mongoose.Schema({
-    url: String,
-    name: String,
-    Statue: String,
- });
+const historiqueSchema = mongoose.Schema({
+  url: String,
+  name: String,
+  Statue: String,
+});
 
 const profilSchema = mongoose.Schema({
   firstname: String,
@@ -34,16 +38,20 @@ const profilSchema = mongoose.Schema({
   email: String,
   password: String,
   token: String,
-  created_at: Date,
+  birthDate: Date,
   city: String,
-  role: String,
+  role: {
+    type: String,
+    enum: ["garder", "faire garder"],
+    required: true,
+  },
   profilAnimal: [profilAnimalSchema],
   avis: [avisSchema],
   historique: [historiqueSchema],
-  like: [{ type: mongoose.Schema.Types.ObjectId, ref: 'profils' }],
-  likeReceived: [{ type: mongoose.Schema.Types.ObjectId, ref: 'profils' }]
+  like: [{ type: mongoose.Schema.Types.ObjectId, ref: "profils" }],
+  likeReceived: [{ type: mongoose.Schema.Types.ObjectId, ref: "profils" }],
 });
 
-const Profil = mongoose.model('profils', profilSchema);
+const Profil = mongoose.model("profils", profilSchema);
 
 module.exports = Profil;
