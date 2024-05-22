@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 
-const photoSchema = mongoose.Schema({
-  url: String,
-  created_at: Date,
-});
+// const photoSchema = mongoose.Schema({
+//   url: String,
+//   created_at: Date,
+// });
 
 const ProfilAnimalSchema = mongoose.Schema({
   name: String,
@@ -16,7 +16,7 @@ const ProfilAnimalSchema = mongoose.Schema({
   gender: { type: String, enum: ["male", "female"], required: true },
   bio: String,
   detail: String,
-  photo: [photoSchema],
+  photoUrl: String,
 });
 
 const avisSchema = mongoose.Schema({

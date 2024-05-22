@@ -4,6 +4,7 @@ var router = express.Router();
 require("../models/connection");
 const { checkBody } = require("../modules/checkbody");
 
+// Get all matchs
 router.get('/matchs', (req, res) => {
     matchs.find()
       .then((data) => {
