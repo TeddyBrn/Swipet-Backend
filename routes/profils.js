@@ -75,7 +75,7 @@ router.post("/signin", (req, res) => {
 
 // Add animal to our database, linked to the corresponding logged user
 router.post("/signup/animal/:token", async (req, res) => {
- console.log(req.body)
+  console.log(req.body);
   if (
     !checkBody(req.body, [
       "name",
@@ -90,19 +90,19 @@ router.post("/signup/animal/:token", async (req, res) => {
     return;
   }
 
-  console.log(req.files)
-  const photoPath = `./tmp/${uniqid()}.jpg`;
-  const resultMove = await req.files.photoFromFront.mv(photoPath);
+  // console.log(req.files);
+  // const photoPath = `./tmp/${uniqid()}.jpg`;
+  // const resultMove = await req.files.photoFromFront.mv(photoPath);
 
-  if (!resultMove) {
-    const resultCloudinary = await cloudinary.uploader.upload(photoPath);
-    res.json({ result: true, url: resultCloudinary.secure_url });
-  } else {
-    res.json({ result: false, error: resultMove})
-  }
+  // if (!resultMove) {
+  //   const resultCloudinary = await cloudinary.uploader.upload(photoPath);
+  //   res.json({ result: true, url: resultCloudinary.secure_url });
+  // } else {
+  //   res.json({ result: false, error: resultMove });
+  // }
 
-  fs.unlinkSync(photoPath)
-  
+  // fs.unlinkSync(photoPath);
+
   const newProfilAnimal = new Animal({
     name: req.body.name,
     birthDate: new Date(req.body.birthDate),
@@ -110,7 +110,7 @@ router.post("/signup/animal/:token", async (req, res) => {
     gender: req.body.gender,
     bio: req.body.bio,
     detail: req.body.detail,
-    photoUrl: resultCloudinary.secure_url
+    // photoUrl: resultCloudinary.secure_url,
   });
   console.log(newProfilAnimal);
 
@@ -125,17 +125,26 @@ router.post("/signup/animal/:token", async (req, res) => {
 });
 
 // Upload chosen image from front
-router.post("/upload", async (req, res) => {
+router.post("/upload/:token", async (req, res) => {
   const photoPath = `./tmp/${uniqid()}.jpg`;
   const resultMove = await req.files.photoFromFront.mv(photoPath);
   if (!resultMove) {
     const resultCloudinary = await cloudinary.uploader.upload(photoPath);
     res.json({ result: true, url: resultCloudinary.secure_url });
   } else {
-    res.json({ result: false, error: resultMove})
+    res.json({ result: false, error: resultMove });
   }
 
-  fs.unlinkSync(photoPath)
+  fs.unlinkSync(photoPath);
+
+  Profil.updateOne(
+    {
+      token: req.params.token,
+    },
+    { $push: { profilAnimal: { photoUrl: resultCloudinary.secure_url } } }
+  ).then((newDoc) => {
+    res.json({ result: true, token: newDoc.token });
+  });
 });
 
 // Get user infos depending on token
