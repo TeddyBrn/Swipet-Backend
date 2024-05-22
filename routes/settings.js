@@ -5,6 +5,7 @@ require("../models/connection");
 const { Profil, Animal } = require("../models/profils");
 const { checkBody } = require("../modules/checkbody");
 
+// Edit user profile in settings
 router.put("/editprofile/:token", (req, res) => {
   Profil.updateOne(
     {
@@ -26,6 +27,7 @@ router.put("/editprofile/:token", (req, res) => {
   });
 });
 
+// Edit animal profile in settings
 router.put("/editanimal/:token/:animalId", (req, res) => {
   Profil.updateOne(
     {
