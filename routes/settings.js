@@ -7,6 +7,17 @@ const { checkBody } = require("../modules/checkbody");
 
 // Edit user profile in settings
 router.put("/editprofile/:token", (req, res) => {
+  if (
+    !checkBody(req.body, [
+      "firstname",
+      "lastname",
+      "email",
+      "city",
+    ])
+  ) {
+    res.json({ result: false, error: "Missing or empty fields" });
+    return;
+  }
   Profil.updateOne(
     {
       token: req.params.token,
@@ -28,11 +39,21 @@ router.put("/editprofile/:token", (req, res) => {
 });
 
 // Edit animal profile in settings
-router.put("/editanimal/:token/:animalId", (req, res) => {
+router.put("/editanimal/:token/:animalname", (req, res) => {
+  if (
+    !checkBody(req.body, [
+      "name",
+      "detail",
+      "bio",
+    ])
+  ) {
+    res.json({ result: false, error: "Missing or empty fields" });
+    return;
+  }
   Profil.updateOne(
     {
       token: req.params.token,
-      'profilAnimal._id': req.params.animalId
+      // 'profilAnimal._id': req.params.animalId
     },
     {
       $set: {

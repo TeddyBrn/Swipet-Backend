@@ -5,19 +5,7 @@ const mongoose = require("mongoose");
 //   created_at: Date,
 // });
 
-const ProfilAnimalSchema = mongoose.Schema({
-  name: String,
-  birthDate: Date,
-  animalType: {
-    type: String,
-    enum: ["chien", "chat", "lapin", "hamster"],
-    required: true,
-  },
-  gender: { type: String, enum: ["male", "female"], required: true },
-  bio: String,
-  detail: String,
-  photoUrl: String,
-});
+
 
 const avisSchema = mongoose.Schema({
   note: Number,
@@ -45,7 +33,8 @@ const profilSchema = mongoose.Schema({
     enum: ["garder", "faire garder"],
     required: false,
   },
-  profilAnimal: [ProfilAnimalSchema],
+  photo: String,
+  Animal: [{ type: mongoose.Schema.Types.ObjectId, ref: "animals" }],
   avis: [avisSchema],
   historique: [historiqueSchema],
   like: [{ type: mongoose.Schema.Types.ObjectId, ref: "profils" }],
@@ -53,6 +42,6 @@ const profilSchema = mongoose.Schema({
 });
 
 const Profil = mongoose.model("profils", profilSchema);
-const Animal = mongoose.model("animals", ProfilAnimalSchema);
 
-module.exports = {Profil, Animal};
+
+module.exports = Profil;
