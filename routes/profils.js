@@ -89,8 +89,8 @@ router.post("/signin", (req, res) => {
   });
 });
 
-router.get("/petsitters/", (req, res) => {
-  Profil.find({ role: 'faire garder' })
+router.get("/petsitters", (req, res) => {
+  Profil.find({ role: 'garder' })
     .then((data) => {
       console.log(data);
       res.json({ result: true, data });
@@ -195,6 +195,7 @@ router.put("/updateprofil/:token", async (req, res) => {
 //     res.json({ result: true, token: newDoc.token });
 //   });
 // });
+
 
 
 
