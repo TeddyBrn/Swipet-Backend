@@ -135,8 +135,6 @@ router.post("/upload/:token", async (req, res) => {
     res.json({ result: false, error: resultMove });
   }
 
-  fs.unlinkSync(photoPath);
-
   Profil.updateOne(
     {
       token: req.params.token,
@@ -145,6 +143,8 @@ router.post("/upload/:token", async (req, res) => {
   ).then((newDoc) => {
     res.json({ result: true, token: newDoc.token });
   });
+
+  fs.unlinkSync(photoPath);
 });
 
 // Get user infos depending on token
