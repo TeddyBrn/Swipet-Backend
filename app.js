@@ -8,6 +8,7 @@ var logger = require('morgan');
 var profilsRouter = require('./routes/profils');
 var settingsRouter = require('./routes/settings');
 var matchsRouter = require('./routes/matchs');
+var animalsRouter = require('./routes/animals');
 
 var app = express();
 
@@ -23,5 +24,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/profils', profilsRouter);
 app.use('/settings', settingsRouter);
 app.use('/matchs', matchsRouter);
+app.use('/animals', animalsRouter);
 
 module.exports = app;

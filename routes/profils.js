@@ -74,6 +74,7 @@ router.post("/signin", (req, res) => {
 });
 
 // Add animal to our database, linked to the corresponding logged user
+/*
 router.post("/signup/animal/:token", async (req, res) => {
   console.log(req.body);
   if (
@@ -124,7 +125,7 @@ router.post("/signup/animal/:token", async (req, res) => {
   });
 });
 
-// Upload chosen image from front
+//Upload chosen image from front
 router.post("/upload/:token", async (req, res) => {
   const photoPath = `./tmp/${uniqid()}.jpg`;
   const resultMove = await req.files.photoFromFront.mv(photoPath);
@@ -146,6 +147,9 @@ router.post("/upload/:token", async (req, res) => {
 
   fs.unlinkSync(photoPath);
 });
+*/
+
+// Route addanimal avec le token comme paramètre d'URL
 
 // Get user infos depending on token
 router.get("/infos/:token", (req, res) => {
