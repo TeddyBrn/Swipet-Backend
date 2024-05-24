@@ -91,7 +91,7 @@ router.post("/signin", (req, res) => {
 router.get("/petsitters", (req, res) => {
   Profil.find({ role: "garder" })
     .then((data) => {
-      console.log(data);
+      
       res.json({ result: true, data });
     })
     .catch((error) => {
