@@ -1,7 +1,6 @@
 var express = require("express");
 var router = express.Router();
 
-
 require("../models/connection");
 const Profil = require("../models/profils");
 const Animal = require("../models/animals");
@@ -20,10 +19,10 @@ router.post("/signup", (req, res) => {
       "firstname",
       "lastname",
       "email",
+      "age",
       "password",
       "role",
       "city",
-      // "birthDate",
     ])
   ) {
     res.json({ result: false, error: "Missing or empty fields" });
@@ -111,9 +110,9 @@ router.post("/signin", (req, res) => {
 });
 
 router.get("/petsitters", (req, res) => {
-  Profil.find({ role: 'garder' })
+  Profil.find({ role: "garder" })
     .then((data) => {
-      console.log(data);
+      
       res.json({ result: true, data });
     })
     .catch((error) => {
@@ -134,7 +133,6 @@ router.get("/infos/:token", (req, res) => {
 
 // Upload choosen image from front
 router.put("/uploadphoto/:token", async (req, res) => {
-
   const photoPath = `./tmp/${uniqid()}.jpg`;
   const resultMove = await req.files.photoFromFront.mv(photoPath);
 
@@ -153,14 +151,7 @@ router.put("/uploadphoto/:token", async (req, res) => {
 });
 
 router.put("/updateprofil/:token", async (req, res) => {
-  if (
-    !checkBody(req.body, [
-      "firstname",
-      "lastname",
-      "email",
-      "city",
-    ])
-  ) {
+  if (!checkBody(req.body, ["firstname", "lastname", "email", "city"])) {
     res.json({ result: false, error: "Missing or empty fields" });
     return;
   }
@@ -216,9 +207,5 @@ router.put("/updateprofil/:token", async (req, res) => {
 //     res.json({ result: true, token: newDoc.token });
 //   });
 // });
-
-
-
-
 
 module.exports = router;

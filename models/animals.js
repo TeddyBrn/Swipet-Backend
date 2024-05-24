@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const AnimalSchema = mongoose.Schema({
     name: String,
-    birthDate: Date,
+    age: Number,
     animalType: {
       type: String,
       enum: ["Chien", "Chat", "Lapin", "Hamster"],
