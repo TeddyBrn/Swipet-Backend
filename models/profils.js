@@ -34,7 +34,7 @@ const profilSchema = mongoose.Schema({
     required: false,
   },
   photo: String,
-  Animal: [{ type: mongoose.Schema.Types.ObjectId, ref: "animals" }],
+  profilAnimal: [{ type: mongoose.Schema.Types.ObjectId, ref: "animals" }],
   avis: [avisSchema],
   historique: [historiqueSchema],
   like: [{ type: mongoose.Schema.Types.ObjectId, ref: "profils" }],
