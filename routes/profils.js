@@ -90,8 +90,8 @@ router.post("/signin", (req, res) => {
   });
 });
 
-router.get("/petsitters/", (req, res) => {
-  Profil.find({ role: 'faire garder' })
+router.get("/petsitters", (req, res) => {
+  Profil.find({ role: 'garder' })
     .then((data) => {
       console.log(data);
       res.json({ result: true, data });
@@ -174,18 +174,7 @@ router.put("/updateprofil/:token", async (req, res) => {
 //     return;
 //   }
 
-  // console.log(req.files);
-  // const photoPath = `./tmp/${uniqid()}.jpg`;
-  // const resultMove = await req.files.photoFromFront.mv(photoPath);
-
-  // if (!resultMove) {
-  //   const resultCloudinary = await cloudinary.uploader.upload(photoPath);
-  //   res.json({ result: true, url: resultCloudinary.secure_url });
-  // } else {
-  //   res.json({ result: false, error: resultMove });
-  // }
-
-  // fs.unlinkSync(photoPath);
+  
 
 //   const newProfilAnimal = new Animal({
 //     name: req.body.name,
@@ -207,6 +196,7 @@ router.put("/updateprofil/:token", async (req, res) => {
 //     res.json({ result: true, token: newDoc.token });
 //   });
 // });
+
 
 
 
