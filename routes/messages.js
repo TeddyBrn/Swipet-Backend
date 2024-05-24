@@ -15,7 +15,7 @@ router.post('/message/', async (req, res) => {
         res.json({ result: false, error: "empty message field" });
         return;
       }
-.findOn
+      Matchs.findOn
       const newMessage = new Message({
         namePetsitter: req.body.petsitter.firstname,
         content: req.body.content,
