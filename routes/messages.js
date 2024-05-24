@@ -5,7 +5,7 @@ var router = express.Router();
 require("../models/connection");
 const { checkBody } = require("../modules/checkbody");
 
-router.post('/message/', async (req, res) => {
+router.post('/newmessage/:matchid/:userid', async (req, res) => {
 
     if (
         !checkBody(req.body, [
@@ -15,7 +15,10 @@ router.post('/message/', async (req, res) => {
         res.json({ result: false, error: "empty message field" });
         return;
       }
-      Matchs.findOn
+
+      Matchs.findOne({userId: userId, petsitterId: petsitterId})
+      .then()
+
       const newMessage = new Message({
         namePetsitter: req.body.petsitter.firstname,
         content: req.body.content,

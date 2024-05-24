@@ -3,8 +3,8 @@ var router = express.Router();
 
 
 require("../models/connection");
-const  Profil = require("../models/profils");
-const  Animal  = require("../models/animals");
+const Profil = require("../models/profils");
+const Animal = require("../models/animals");
 const { checkBody } = require("../modules/checkbody");
 const bcrypt = require("bcrypt");
 const uid2 = require("uid2");
@@ -13,61 +13,81 @@ const uniqid = require("uniqid");
 const fs = require("fs");
 
 router.post("/signup", (req, res) => {
-  // if (
-  //   !checkBody(req.body, [
-  //     "firstname",
-  //     "lastname",
-  //     "email",
-  //     "password",
-  //     "role",
-  //     "city",
-  //     "birthDate",
-  //   ])
-  // ) {
-  //   res.json({ result: false, error: "Missing or empty fields" });
-  //   return;
-  // }
+  console.log('console log file',req.files);
+  console.log('console log body',req.body)
+  if (
+    !checkBody(req.body, [
+      "firstname",
+      "lastname",
+      "email",
+      "password",
+      "role",
+      "city",
+      // "birthDate",
+    ])
+  ) {
+    res.json({ result: false, error: "Missing or empty fields" });
+    return;
+  }
 
   Profil.findOne({
     email: { $regex: new RegExp(req.body.email, "i") },
-    }).then((data) => {
-      if (data === null) {
+  }).then((data) => {
+    if (data === null) {
         const hash = bcrypt.hashSync(req.body.password, 10);
 
-        const photoPath = `./tmp/${uniqid()}.jpg`;
-        req.files.photoFromFront.mv(photoPath).then((resultMove) => {
-          if (resultMove) {
-            res.json({ result: false, error: resultMove });
-          } else {
-            cloudinary.uploader.upload(photoPath).then((resultCloudinary)=>{
-              const url = resultCloudinary.secure_url;
-              console.log(url);
-              fs.unlinkSync(photoPath);
-
-              const newProfil = new Profil({
-                firstname: req.body.firstname,
-                lastname: req.body.lastname,
-                email: req.body.email,
-                city: req.body.city,
-                birthDate: req.body.birthDate,
-                role: req.body.role,
-                password: hash,
-                token: uid2(32),
-                photo: url
-                });
+            if (req.files) {
+        
+                const photoPath = `./tmp/${uniqid()}.jpg`;
+                req.files.photoFromFront.mv(photoPath).then((resultMove) => {
+                    if (resultMove) {
+                      res.json({ result: false, error: resultMove });
+                    } else {
+                      cloudinary.uploader.upload(photoPath).then((resultCloudinary) => {
+                        const url = resultCloudinary.secure_url;
+                        console.log(url);
+                        fs.unlinkSync(photoPath);
               
+                        const newProfil = new Profil({
+                          firstname: req.body.firstname,
+                          lastname: req.body.lastname,
+                          email: req.body.email,
+                          city: req.body.city,
+                      // birthDate: req.body.birthDate,
+                          role: req.body.role,
+                          password: hash,
+                          token: uid2(32),
+                          photo: url || '' 
+                        });
+
+                        newProfil.save().then((newDoc) => {
+                          console.log('console log newdoc', newDoc)
+                          res.json({ result: true, newDoc: newDoc });
+                        }).catch(error => console.log(error))
+                      } )}
+                      }).catch(error => console.log(error))
+            
+            } else {
+                const newProfil = new Profil({
+                  firstname: req.body.firstname,
+                  lastname: req.body.lastname,
+                  email: req.body.email,
+                  city: req.body.city,
+                  // birthDate: req.body.birthDate,
+                  role: req.body.role,
+                  password: hash,
+                  token: uid2(32),
+                });
                 newProfil.save().then((newDoc) => {
                   res.json({ result: true, newDoc: newDoc });
                 })
-            })
-          }
-        })
-      } else {
-        res.json({ result: false, error: "User already exists" });
-      }
-    })
+            }
+    } else {
+          res.json({ result: false, error: "User already exists" });
+        }
   })
-      
+})
+
 
 router.post("/signin", (req, res) => {
   if (!checkBody(req.body, ["email", "password"])) {
@@ -121,13 +141,13 @@ router.put("/uploadphoto/:token", async (req, res) => {
   if (resultMove) {
     res.json({ result: false, error: resultMove });
   } else {
-    cloudinary.uploader.upload(photoPath).then((resultCloudinary)=>{
+    cloudinary.uploader.upload(photoPath).then((resultCloudinary) => {
       const url = resultCloudinary.secure_url;
       fs.unlinkSync(photoPath);
-      Profil.updateOne({token: req.params.token},{ photo: url })
-      .then((updateDoc) => {
-        res.json({ result: true, token: updateDoc.token })
-      })
+      Profil.updateOne({ token: req.params.token }, { photo: url })
+        .then((updateDoc) => {
+          res.json({ result: true, token: updateDoc.token })
+        })
     })
   }
 });
@@ -144,12 +164,12 @@ router.put("/updateprofil/:token", async (req, res) => {
     res.json({ result: false, error: "Missing or empty fields" });
     return;
   }
-  Profil.updateOne({token: req.params.token},{
-     firstname: req.body.firstname,
-     lastname: req.body.lastname,
-     city: req.body.city,
-     email: req.body.email 
-    })
+  Profil.updateOne({ token: req.params.token }, {
+    firstname: req.body.firstname,
+    lastname: req.body.lastname,
+    city: req.body.city,
+    email: req.body.email
+  })
     .then((updateDoc) => {
       res.json({ result: true, token: updateDoc.token })
     })
@@ -174,7 +194,7 @@ router.put("/updateprofil/:token", async (req, res) => {
 //     return;
 //   }
 
-  
+
 
 //   const newProfilAnimal = new Animal({
 //     name: req.body.name,

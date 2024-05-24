@@ -10,15 +10,20 @@ const fs = require("fs");
 
 router.post('/addanimal/:token', async (req, res) => {
     try {
-      const { name, birthDate, animalType, gender, bio, detail } = req.body;
+    
+
+        const { name, birthDate, animalType, gender, bio, detail } = req.body;
       
-      const userId = req.params.token;
-  
+        const userId = req.params.token;
+
       const photoPath = `./tmp/${uniqid()}.jpg`;
       await req.files.photoUrl.mv(photoPath);
       const cloudinaryResponse = await cloudinary.uploader.upload(photoPath);
       const photoUrl = cloudinaryResponse.secure_url;
       fs.unlinkSync(photoPath);
+
+     
+
   
       // Création d'un nouvel animal
       const newAnimal = new Animal({
