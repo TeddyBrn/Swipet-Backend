@@ -1,10 +1,9 @@
 var express = require("express");
 var router = express.Router();
 
-
 require("../models/connection");
-const  Profil = require("../models/profils");
-const  Animal  = require("../models/animals");
+const Profil = require("../models/profils");
+const Animal = require("../models/animals");
 const { checkBody } = require("../modules/checkbody");
 const bcrypt = require("bcrypt");
 const uid2 = require("uid2");
@@ -13,61 +12,60 @@ const uniqid = require("uniqid");
 const fs = require("fs");
 
 router.post("/signup", (req, res) => {
-  // if (
-  //   !checkBody(req.body, [
-  //     "firstname",
-  //     "lastname",
-  //     "email",
-  //     "password",
-  //     "role",
-  //     "city",
-  //     "birthDate",
-  //   ])
-  // ) {
-  //   res.json({ result: false, error: "Missing or empty fields" });
-  //   return;
-  // }
+  if (
+    !checkBody(req.body, [
+      "firstname",
+      "lastname",
+      "email",
+      "age",
+      "password",
+      "role",
+      "city",
+    ])
+  ) {
+    res.json({ result: false, error: "Missing or empty fields" });
+    return;
+  }
 
   Profil.findOne({
     email: { $regex: new RegExp(req.body.email, "i") },
-    }).then((data) => {
-      if (data === null) {
-        const hash = bcrypt.hashSync(req.body.password, 10);
+  }).then((data) => {
+    if (data === null) {
+      const hash = bcrypt.hashSync(req.body.password, 10);
 
-        const photoPath = `./tmp/${uniqid()}.jpg`;
-        req.files.photoFromFront.mv(photoPath).then((resultMove) => {
-          if (resultMove) {
-            res.json({ result: false, error: resultMove });
-          } else {
-            cloudinary.uploader.upload(photoPath).then((resultCloudinary)=>{
-              const url = resultCloudinary.secure_url;
-              console.log(url);
-              fs.unlinkSync(photoPath);
+      const photoPath = `./tmp/${uniqid()}.jpg`;
+      req.files.photoFromFront.mv(photoPath).then((resultMove) => {
+        if (resultMove) {
+          res.json({ result: false, error: resultMove });
+        } else {
+          cloudinary.uploader.upload(photoPath).then((resultCloudinary) => {
+            const url = resultCloudinary.secure_url;
+            console.log(url);
+            fs.unlinkSync(photoPath);
 
-              const newProfil = new Profil({
-                firstname: req.body.firstname,
-                lastname: req.body.lastname,
-                email: req.body.email,
-                city: req.body.city,
-                birthDate: req.body.birthDate,
-                role: req.body.role,
-                password: hash,
-                token: uid2(32),
-                photo: url
-                });
-              
-                newProfil.save().then((newDoc) => {
-                  res.json({ result: true, newDoc: newDoc });
-                })
-            })
-          }
-        })
-      } else {
-        res.json({ result: false, error: "User already exists" });
-      }
-    })
-  })
-      
+            const newProfil = new Profil({
+              firstname: req.body.firstname,
+              lastname: req.body.lastname,
+              email: req.body.email,
+              city: req.body.city,
+              age: req.body.age,
+              role: req.body.role,
+              password: hash,
+              token: uid2(32),
+              photo: url,
+            });
+
+            newProfil.save().then((newDoc) => {
+              res.json({ result: true, newDoc: newDoc });
+            });
+          });
+        }
+      });
+    } else {
+      res.json({ result: false, error: "User already exists" });
+    }
+  });
+});
 
 router.post("/signin", (req, res) => {
   if (!checkBody(req.body, ["email", "password"])) {
@@ -91,7 +89,7 @@ router.post("/signin", (req, res) => {
 });
 
 router.get("/petsitters", (req, res) => {
-  Profil.find({ role: 'garder' })
+  Profil.find({ role: "garder" })
     .then((data) => {
       console.log(data);
       res.json({ result: true, data });
@@ -114,48 +112,41 @@ router.get("/infos/:token", (req, res) => {
 
 // Upload choosen image from front
 router.put("/uploadphoto/:token", async (req, res) => {
-
   const photoPath = `./tmp/${uniqid()}.jpg`;
   const resultMove = await req.files.photoFromFront.mv(photoPath);
 
   if (resultMove) {
     res.json({ result: false, error: resultMove });
   } else {
-    cloudinary.uploader.upload(photoPath).then((resultCloudinary)=>{
+    cloudinary.uploader.upload(photoPath).then((resultCloudinary) => {
       const url = resultCloudinary.secure_url;
       fs.unlinkSync(photoPath);
-      Profil.updateOne({token: req.params.token},{ photo: url })
-      .then((updateDoc) => {
-        res.json({ result: true, token: updateDoc.token })
-      })
-    })
+      Profil.updateOne({ token: req.params.token }, { photo: url }).then(
+        (updateDoc) => {
+          res.json({ result: true, token: updateDoc.token });
+        }
+      );
+    });
   }
 });
 
 router.put("/updateprofil/:token", async (req, res) => {
-  if (
-    !checkBody(req.body, [
-      "firstname",
-      "lastname",
-      "email",
-      "city",
-    ])
-  ) {
+  if (!checkBody(req.body, ["firstname", "lastname", "email", "city"])) {
     res.json({ result: false, error: "Missing or empty fields" });
     return;
   }
-  Profil.updateOne({token: req.params.token},{
-     firstname: req.body.firstname,
-     lastname: req.body.lastname,
-     city: req.body.city,
-     email: req.body.email 
-    })
-    .then((updateDoc) => {
-      res.json({ result: true, token: updateDoc.token })
-    })
-
-})
-
+  Profil.updateOne(
+    { token: req.params.token },
+    {
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      city: req.body.city,
+      email: req.body.email,
+    }
+  ).then((updateDoc) => {
+    res.json({ result: true, token: updateDoc.token });
+  });
+});
 
 // // Add animal to our database, linked to the corresponding logged user
 // router.post("/signup/animal/:token", async (req, res) => {
@@ -173,8 +164,6 @@ router.put("/updateprofil/:token", async (req, res) => {
 //     res.json({ result: false, error: "Missing or empty fields" });
 //     return;
 //   }
-
-  
 
 //   const newProfilAnimal = new Animal({
 //     name: req.body.name,
@@ -196,9 +185,5 @@ router.put("/updateprofil/:token", async (req, res) => {
 //     res.json({ result: true, token: newDoc.token });
 //   });
 // });
-
-
-
-
 
 module.exports = router;

@@ -10,7 +10,7 @@ const fs = require("fs");
 
 router.post('/addanimal/:token', async (req, res) => {
     try {
-      const { name, birthDate, animalType, gender, bio, detail } = req.body;
+      const { name, age, animalType, gender, bio, detail } = req.body;
       
       const userId = req.params.token;
   
@@ -23,8 +23,8 @@ router.post('/addanimal/:token', async (req, res) => {
       // Création d'un nouvel animal
       const newAnimal = new Animal({
         name,
-        birthDate,
-        animalType,
+        age,
+        age,
         gender,
         bio,
         detail,

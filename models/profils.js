@@ -26,7 +26,6 @@ const profilSchema = mongoose.Schema({
   email: String,
   password: String,
   token: String,
-  birthDate: Date,
   city: String,
   role: {
     type: String,
