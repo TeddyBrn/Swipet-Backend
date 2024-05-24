@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 
 const messageSchema = mongoose.Schema({
-    namePetsitter: [{ type: mongoose.Schema.Types.ObjectId, ref: 'profils' }],
+    // namePetsitter: [{ type: mongoose.Schema.Types.ObjectId, ref: 'profils' }],
     content: String,
     created_at: Date,
+    createdBy: profil_id
 });
 
 const proposalSchema = mongoose.Schema({

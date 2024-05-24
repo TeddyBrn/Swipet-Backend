@@ -5,10 +5,10 @@ const AnimalSchema = mongoose.Schema({
     birthDate: Date,
     animalType: {
       type: String,
-      enum: ["chien", "chat", "lapin", "hamster"],
+      enum: ["Chien", "Chat", "Lapin", "Hamster"],
       required: true,
     },
-    gender: { type: String, enum: ["male", "female"], required: true },
+    gender: { type: String, enum: ["Male", "Female"], required: true },
     bio: String,
     detail: String,
     photoUrl: String,
