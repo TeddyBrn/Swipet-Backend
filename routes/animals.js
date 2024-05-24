@@ -2,7 +2,8 @@ var express = require("express");
 var router = express.Router();
 
 require("../models/connection");
-const { Profil, Animal } = require("../models/profils");
+const  Profil  = require("../models/profils");
+const Animal  = require("../models/animals");
 const cloudinary = require("cloudinary").v2;
 const uniqid = require("uniqid");
 const fs = require("fs");
@@ -10,6 +11,7 @@ const fs = require("fs");
 router.post('/addanimal/:token', async (req, res) => {
     try {
       const { name, birthDate, animalType, gender, bio, detail } = req.body;
+      
       const userId = req.params.token;
   
       const photoPath = `./tmp/${uniqid()}.jpg`;

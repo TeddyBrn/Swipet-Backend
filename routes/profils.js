@@ -13,20 +13,20 @@ const uniqid = require("uniqid");
 const fs = require("fs");
 
 router.post("/signup", (req, res) => {
-  if (
-    !checkBody(req.body, [
-      "firstname",
-      "lastname",
-      "email",
-      "password",
-      "role",
-      "city",
-      "birthDate",
-    ])
-  ) {
-    res.json({ result: false, error: "Missing or empty fields" });
-    return;
-  }
+  // if (
+  //   !checkBody(req.body, [
+  //     "firstname",
+  //     "lastname",
+  //     "email",
+  //     "password",
+  //     "role",
+  //     "city",
+  //     "birthDate",
+  //   ])
+  // ) {
+  //   res.json({ result: false, error: "Missing or empty fields" });
+  //   return;
+  // }
 
   Profil.findOne({
     email: { $regex: new RegExp(req.body.email, "i") },
@@ -41,6 +41,7 @@ router.post("/signup", (req, res) => {
           } else {
             cloudinary.uploader.upload(photoPath).then((resultCloudinary)=>{
               const url = resultCloudinary.secure_url;
+              console.log(url);
               fs.unlinkSync(photoPath);
 
               const newProfil = new Profil({
@@ -48,7 +49,7 @@ router.post("/signup", (req, res) => {
                 lastname: req.body.lastname,
                 email: req.body.email,
                 city: req.body.city,
-                birthDate: new Date(req.body.birthDate),
+                birthDate: req.body.birthDate,
                 role: req.body.role,
                 password: hash,
                 token: uid2(32),
@@ -56,7 +57,7 @@ router.post("/signup", (req, res) => {
                 });
               
                 newProfil.save().then((newDoc) => {
-                  res.json({ result: true, token: newDoc.token });
+                  res.json({ result: true, newDoc: newDoc });
                 })
             })
           }
