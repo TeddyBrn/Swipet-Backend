@@ -3,10 +3,26 @@ var router = express.Router();
 
 
 require("../models/connection");
+const {Match, Message} = require("../models/matchs");
+const Profil = require("../models/profils");
 const { checkBody } = require("../modules/checkbody");
 
-router.post('/newmessage/:matchid/:userid', async (req, res) => {
+// récuperer tous les messages d'un match
+router.get("/:matchId", async (req, res) => {
+  const matchId = req.params.matchId;
 
+  Match.find({_id: matchId })
+  .populate("messages")
+  .then((data)=> {
+    res.json({messages: data});
+  })
+});
+
+router.post('/newMessage/:matchId/:userId', async (req, res) => {
+
+  const matchId = req.params.matchId;
+  const userId = req.params.userId;
+  console.log(matchId, userId)
     if (
         !checkBody(req.body, [
           "content",
@@ -14,25 +30,40 @@ router.post('/newmessage/:matchid/:userid', async (req, res) => {
       ) {
         res.json({ result: false, error: "empty message field" });
         return;
-      }
-
-      Matchs.findOne({userId: userId, petsitterId: petsitterId})
-      .then()
+      };
 
       const newMessage = new Message({
-        namePetsitter: req.body.petsitter.firstname,
         content: req.body.content,
         created_at: new Date(req.body.date),
-        createdBy: profil_id
+        createdBy: userId
 
         });
       
-        newMessage.save().then((newDoc) => {
-          res.json({ result: true, message: newDoc });
-        })
-
-  
+        // newMessage.save().then((newDoc) => {
+          Match.updateOne({matchId: matchId}, {$push: {messages: newMessage}})
+          .then(()=> {
+             res.json({ result: true, message: 'message added'});
+          })
+        // });
 });
+
+
+// route pour supprimer un message à finir apres
+// router.delete('/deleteMessage/:matchId/:messageId', async(req, res) => {
+
+//     const matchId = req.params.matchId;
+//     const messageId = req.params.messageId;
+//     const messages = await Match.findById(matchId).populate('messages')
+//     const message = messages.includes(messageId)
+
+//   Match.updateOne(
+//     { _id: matchId },
+//     { $pull: { messages: message } }
+//   ).then(() => {
+//     res.json({ result: true, message: 'message deleted'});
+//   })
+// });
+
 
 
 
