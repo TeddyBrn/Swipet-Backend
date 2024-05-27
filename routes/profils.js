@@ -109,6 +109,28 @@ router.post("/signin", (req, res) => {
   });
 });
 
+router.get('/swipe/:role', (req, res) => {
+  if(req.params.role === 'faire garder') {
+    Profil.find({ role: 'garder' })
+    .then((data) => {
+      res.json({ result: true, data });
+    })
+    .catch((error) => {
+      res.json({ result: false, error: error.message });
+    });
+  } else if(req.params.role === 'garder') {
+    Profil.find({ role: 'faire garder' })
+    .then((data) => {
+      res.json({ result: true, data });
+    })
+    .catch((error) => {
+      res.json({ result: false, error: error.message });
+    });
+  }
+
+});
+
+
 router.get("/petsitters", (req, res) => {
   Profil.find({ role: "garder" })
     .then((data) => {

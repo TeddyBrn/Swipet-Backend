@@ -9,6 +9,8 @@ var profilsRouter = require('./routes/profils');
 var settingsRouter = require('./routes/settings');
 var matchsRouter = require('./routes/matchs');
 var animalsRouter = require('./routes/animals');
+var messagesRouter = require('./routes/messages');
+var proposalsRouter = require('./routes/proposals');
 
 var app = express();
 
@@ -25,5 +27,7 @@ app.use('/profils', profilsRouter);
 app.use('/settings', settingsRouter);
 app.use('/matchs', matchsRouter);
 app.use('/animals', animalsRouter);
+app.use('/messages', messagesRouter);
+app.use('/proposals', proposalsRouter);
 
 module.exports = app;

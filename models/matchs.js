@@ -1,18 +1,20 @@
 const mongoose = require('mongoose');
 
 const messageSchema = mongoose.Schema({
-    // namePetsitter: [{ type: mongoose.Schema.Types.ObjectId, ref: 'profils' }],
+    // namePetsitter: ,
     content: String,
     created_at: Date,
-    createdBy: profil_id
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'profils' }
 });
 
 const proposalSchema = mongoose.Schema({
-    name: String,
+    // name: String,
+    keptAnimal:[{ type: mongoose.Schema.Types.ObjectId, ref: 'animals' }],
     startDate: Date,
     endDate: Date,
     price: Number,
     infos: String,
+    
 });
 
 
@@ -24,5 +26,7 @@ const matchSchema = mongoose.Schema({
 });
 
 const Match = mongoose.model('matches', matchSchema);
+const Message = mongoose.model('messages', messageSchema);
+const Proposal = mongoose.model('proposals', proposalSchema);
 
-module.exports = Match;
+module.exports = {Match, Message, Proposal};
