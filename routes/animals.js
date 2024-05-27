@@ -28,6 +28,7 @@ router.post('/addanimal/:token', async (req, res) => {
         name,
         age,
         age,
+        animalType,
         gender,
         bio,
         detail,
@@ -50,6 +51,9 @@ router.post('/addanimal/:token', async (req, res) => {
       res.status(500).json({ success: false, error: error.message });
     }
   });
+
+ 
+  
 
   
 module.exports = router;
