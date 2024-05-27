@@ -27,6 +27,7 @@ const profilSchema = mongoose.Schema({
   password: String,
   token: String,
   city: String,
+  age: Number,
   role: {
     type: String,
     enum: ["garder", "faire garder"],

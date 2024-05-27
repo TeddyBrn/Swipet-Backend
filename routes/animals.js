@@ -27,7 +27,7 @@ router.post('/addanimal/:token', async (req, res) => {
       const newAnimal = new Animal({
         name,
         age,
-        age,
+        animalType,
         gender,
         bio,
         detail,
