@@ -4,7 +4,7 @@ var router = express.Router();
 
 require("../models/connection");
 const {Match, Message} = require("../models/matchs");
-const Profil = require("../models/profils");
+const {Profil} = require("../models/profils");
 const { checkBody } = require("../modules/checkbody");
 
 // récuperer tous les messages d'un match

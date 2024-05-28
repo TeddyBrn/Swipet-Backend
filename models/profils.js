@@ -11,7 +11,7 @@ const avisSchema = mongoose.Schema({
   note: Number,
   content: String,
   created_at: Date,
-  user_id: [{ type: mongoose.Schema.Types.ObjectId, ref: "profils" }],
+  user_id: { type: mongoose.Schema.Types.ObjectId, ref: "profils" },
 });
 
 const historiqueSchema = mongoose.Schema({
@@ -42,6 +42,8 @@ const profilSchema = mongoose.Schema({
 });
 
 const Profil = mongoose.model("profils", profilSchema);
+const Avis = mongoose.model("avis", avisSchema);
+const Historique = mongoose.model("historiques", historiqueSchema);
 
 
-module.exports = Profil;
+module.exports = {Profil, Avis, Historique};
