@@ -17,18 +17,20 @@ router.get("/matchs", (req, res) => {
 });
 
 //Récuperer tous les matchs d'un user
-router.get("/matches/:userToken", async (req, res) => {
+router.get("/:userToken", async (req, res) => {
 
   const userToken = req.params.userToken;
   const user = await Profil.findOne({token: userToken});
+  console.log(user)
   const userId = user._id;
   const matches = await Match.find({ user_id: userId
     // $or: [{ user_id: userId }, { petsitter_id: userId }],
   })
     .populate("user_id")
-    // .populate("petsitter_id")
-    // .populate("messages.sender");
+    .populate("petsitter_id")
+    .populate("messages");
   res.json(matches);
+  console.log(matches)
 });
 
 router.post("/like/:userToken/:likedUserId", async (req, res) => {

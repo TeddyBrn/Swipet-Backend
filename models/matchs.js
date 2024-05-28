@@ -19,8 +19,8 @@ const proposalSchema = mongoose.Schema({
 
 
 const matchSchema = mongoose.Schema({
-    user_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'profils' }],
-    petsitter_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'profils' }],
+    user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'profils' },
+    petsitter_id: { type: mongoose.Schema.Types.ObjectId, ref: 'profils' },
     messages: [messageSchema],
     proposal: [proposalSchema],
 });

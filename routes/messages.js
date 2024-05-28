@@ -12,9 +12,10 @@ router.get("/:matchId", async (req, res) => {
   const matchId = req.params.matchId;
 
   Match.find({_id: matchId })
+  .populate("petsitterId")
   .populate("messages")
   .then((data)=> {
-    res.json({messages: data});
+    res.json({data});
   })
 });
 
