@@ -26,8 +26,8 @@ router.get("/matches/:userToken", async (req, res) => {
     // $or: [{ user_id: userId }, { petsitter_id: userId }],
   })
     .populate("user_id")
-    // .populate("petsitter_id")
-    // .populate("messages.sender");
+    .populate("petsitter_id")
+    .populate("messages");
   res.json(matches);
 });
 
