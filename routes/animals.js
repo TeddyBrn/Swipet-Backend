@@ -1,14 +1,14 @@
-var express = require("express");
+var express = require('express');
 var router = express.Router();
 
-require("../models/connection");
-const Profil = require("../models/profils");
-const Animal = require("../models/animals");
-const cloudinary = require("cloudinary").v2;
-const uniqid = require("uniqid");
-const fs = require("fs");
+require('../models/connection');
+const Profil = require('../models/profils');
+const Animal = require('../models/animals');
+const cloudinary = require('cloudinary').v2;
+const uniqid = require('uniqid');
+const fs = require('fs');
 
-router.post("/addanimal/:token", async (req, res) => {
+router.post('/addanimal/:token', async (req, res) => {
   try {
     const { name, age, animalType, gender, bio, detail } = req.body;
 
@@ -28,7 +28,7 @@ router.post("/addanimal/:token", async (req, res) => {
       gender,
       bio,
       detail,
-      photoUrl,
+      photoUrl
     });
 
     const savedAnimal = await newAnimal.save();
@@ -36,13 +36,13 @@ router.post("/addanimal/:token", async (req, res) => {
     // Mise à jour du profil utilisateur
     await Profil.updateOne(
       { token: userId },
-      { $push: { profilAnimal: savedAnimal._id } },
+      { $push: { profilAnimal: {id :savedAnimal._id} } },
       { new: true }
     );
     if (!Profil) {
       return res
         .status(404)
-        .json({ success: false, message: "Profil utilisateur non trouvé" });
+        .json({ success: false, message: 'Profil utilisateur non trouvé' });
     }
     res.status(201).json({ success: true, animalId: savedAnimal._id });
   } catch (error) {
