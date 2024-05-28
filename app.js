@@ -11,6 +11,8 @@ var matchsRouter = require('./routes/matchs');
 var animalsRouter = require('./routes/animals');
 var messagesRouter = require('./routes/messages');
 var proposalsRouter = require('./routes/proposals');
+var avisRouter = require('./routes/avis');
+// var historiquesRouter = require('./routes/historiques');
 
 var app = express();
 
@@ -29,5 +31,7 @@ app.use('/matchs', matchsRouter);
 app.use('/animals', animalsRouter);
 app.use('/messages', messagesRouter);
 app.use('/proposals', proposalsRouter);
+app.use('/avis', avisRouter);
+// app.use('/historiques', historiquesRouter);
 
 module.exports = app;

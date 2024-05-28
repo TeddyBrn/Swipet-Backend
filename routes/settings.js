@@ -2,7 +2,8 @@ var express = require("express");
 var router = express.Router();
 
 require("../models/connection");
-const { Profil, Animal } = require("../models/profils");
+const { Profil } = require("../models/profils");
+const { Animal } = require("../models/animals");
 const { checkBody } = require("../modules/checkbody");
 
 // Edit user profile in settings

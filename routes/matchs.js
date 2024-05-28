@@ -3,7 +3,7 @@ var router = express.Router();
 
 require("../models/connection");
 const { checkBody } = require("../modules/checkbody");
-const Profil = require("../models/profils");
+const {Profil} = require("../models/profils");
 const {Match} = require('../models/matchs')
 
 // Get all matchs
@@ -17,8 +17,11 @@ router.get("/matchs", (req, res) => {
 });
 
 //Récuperer tous les matchs d'un user
-router.get("/matches/:userId", async (req, res) => {
-  const userId = req.params.userId;
+router.get("/matches/:userToken", async (req, res) => {
+
+  const userToken = req.params.userToken;
+  const user = await Profil.findOne({token: userToken});
+  const userId = user._id;
   const matches = await Match.find({ user_id: userId
     // $or: [{ user_id: userId }, { petsitter_id: userId }],
   })
