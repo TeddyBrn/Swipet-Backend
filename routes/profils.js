@@ -100,14 +100,7 @@ router.post('/signin', (req, res) => {
 
   Profil.findOne({ email: req.body.email }).then((data) => {
     if (data && bcrypt.compareSync(req.body.password, data.password)) {
-      res.json({
-        result: true,
-        token: data.token,
-        email: data.email,
-        firstname: data.firstname,
-        lastname: data.lastname,
-        role: data.role
-      });
+      res.json({result: true, data });
     } else {
       res.json({ result: false, error: 'User not found or wrong password' });
     }
@@ -115,53 +108,38 @@ router.post('/signin', (req, res) => {
 });
 
 router.get('/swipe/:role', (req, res) => {
-  if(req.params.role === 'faire garder') {
+  if (req.params.role === 'faire garder') {
     Profil.find({ role: 'garder' })
-    .then((data) => {
-      res.json({ result: true, data });
-    })
-    .catch((error) => {
-      res.json({ result: false, error: error.message });
-    });
-  } else if(req.params.role === 'garder') {
+      .then((data) => {
+        res.json({ result: true, data });
+      })
+      .catch((error) => {
+        res.json({ result: false, error: error.message });
+      });
+  } else if (req.params.role === 'garder') {
     Profil.find({ role: 'faire garder' })
-    .then((data) => {
-      res.json({ result: true, data });
-    })
-    .catch((error) => {
-      res.json({ result: false, error: error.message });
-    });
+      .then((data) => {
+        res.json({ result: true, data });
+      })
+      .catch((error) => {
+        res.json({ result: false, error: error.message });
+      });
   }
-
 });
 
-
-router.get('/swipe/:role', (req, res) => {
-  if(req.params.role === 'faire garder') {
-    Profil.find({ role: 'garder' })
-    .then((data) => {
-      res.json({ result: true, data });
-    })
-    .catch((error) => {
-      res.json({ result: false, error: error.message });
-    });
-  } else if(req.params.role === 'garder') {
-    Profil.find({ role: 'faire garder' })
-    .then((data) => {
-      res.json({ result: true, data });
-    })
-    .catch((error) => {
-      res.json({ result: false, error: error.message });
-    });
-  }
-
-});
 
 // Get user infos depending on token
 router.get('/infos/:token', (req, res) => {
   Profil.findOne({ token: req.params.token })
     .then((data) => {
-      res.json({ result: true, data });
+      if(data.role === 'garder') {
+        res.json({ result: true, data });
+      } else if(data.role === 'faire garder') {
+        console.log(data.profilAnimal[0])
+        Animal.findOne({ _id: data.profilAnimal[0] }).then((data) => {
+          res.json({ result: true, data });
+        });
+      }
     })
     .catch((error) => {
       res.json({ result: false, error: error.message });
