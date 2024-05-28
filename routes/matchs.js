@@ -4,7 +4,7 @@ var router = express.Router();
 require("../models/connection");
 const { checkBody } = require("../modules/checkbody");
 const Profil = require("../models/profils");
-const Match = require("../models/matchs");
+const {Match} = require('../models/matchs')
 
 // Get all matchs
 router.get("/matchs", (req, res) => {
@@ -28,13 +28,14 @@ router.get("/matches/:userId", async (req, res) => {
   res.json(matches);
 });
 
-router.post("/like/:userId/:likedUserId", async (req, res) => {
-  const userId = req.params.userId;
+router.post("/like/:userToken/:likedUserId", async (req, res) => {
+  const userToken = req.params.userToken;
   const likedUserId = req.params.likedUserId
 
-  console.log(likedUserId)
+  console.log(likedUserId, userToken)
   
-  const user = await Profil.findById(userId);
+  const user = await Profil.findOne({token: userToken});
+  const userId = user._id;
   const likedUser = await Profil.findById(likedUserId);
   console.log('console', user)
   console.log('log', likedUser)
@@ -57,15 +58,63 @@ router.post("/like/:userId/:likedUserId", async (req, res) => {
     //   res.json({result: false, message: 'match already exist'})
     //     } else {
         // match = true;
-          const newMatch = new Match ({
+          const newMatch = new Match({
             user_id: userId,
             petsitter_id: likedUserId,
             messages: [],
             proposal: [],
           })
+          
           newMatch.save().then((newDoc) => {
-            console.log('console log newdoc', newDoc)
-            res.json({ result: true, newDoc: newDoc });
+            console.log('console log newMatch', newDoc)
+            res.json({ result: true, message: 'new match created!' });
+          });
+        // }
+  } else {
+    res.json({result: true, message: 'like created'})
+  }
+});
+
+router.post("/likes/:userId/:likedUserId", async (req, res) => {
+  const userId = req.params.userId;
+  const likedUserId = req.params.likedUserId
+
+  console.log(likedUserId, userId)
+  
+  const user = await Profil.findById(userId);
+  // const userId = user._id;
+  const likedUser = await Profil.findById(likedUserId);
+  console.log('console', user)
+  console.log('log', likedUser)
+  if (!user.like.includes(likedUserId)) {
+     await Profil.updateOne({_id: userId}, { $push: { like: likedUserId } })
+     await Profil.updateOne({_id: likedUserId}, { $push: { likeReceived: userId } })
+   } 
+  // else {
+  // //   res.json({result: false, message: 'like already exist'})
+  // // };
+ 
+
+  user.like.push(likedUserId);
+  likedUser.likeReceived.push(userId)
+  console.log(user.like)
+
+  // création de match
+  if (likedUser.like.includes(userId) && likedUser.likeReceived.includes(userId) ) {
+    // if (Match.find({user_id: userId, petsitter_id: likedUserId})) {
+    //   res.json({result: false, message: 'match already exist'})
+    //     } else {
+        // match = true;
+          const newMatch = new Match({
+            user_id: userId,
+            petsitter_id: likedUserId,
+            messages: [],
+            proposal: [],
+          })
+          
+          newMatch.save().then((newDoc) => {
+            console.log('console log newMatch', newDoc)
+            res.json({ result: true, message: 'new match created!' });
           });
         // }
   } else {
