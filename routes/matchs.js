@@ -29,21 +29,23 @@ router.get("/:userToken", async (req, res) => {
     .populate("user_id")
     .populate("petsitter_id")
     .populate("messages");
-  res.json(matches);
-  console.log(matches)
+  res.json({result: true, matches: matches});
+  // console.log(matches)
 });
 
 router.post("/like/:userToken/:likedUserId", async (req, res) => {
   const userToken = req.params.userToken;
   const likedUserId = req.params.likedUserId
-
+console.log(userToken)
   console.log(likedUserId, userToken)
   
   const user = await Profil.findOne({token: userToken});
   const userId = user._id;
   const likedUser = await Profil.findById(likedUserId);
-  // console.log('console', user)
-  // console.log('log', likedUser)
+  console.log('console', user)
+  console.log('log', likedUser)
+
+  // un if pour éviter de liker deux fois la meme personne
   if (!user.like.includes(likedUserId)) {
      await Profil.updateOne({_id: userId}, { $push: { like: likedUserId } })
      await Profil.updateOne({_id: likedUserId}, { $push: { likeReceived: userId } })
