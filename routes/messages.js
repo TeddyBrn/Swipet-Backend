@@ -12,10 +12,10 @@ router.get("/:matchId", async (req, res) => {
   const matchId = req.params.matchId;
 
   Match.find({_id: matchId })
-  .populate("petsitterId")
+  .populate("petsitter_id")
   .populate("messages")
   .then((data)=> {
-    res.json({data});
+    res.json({result: true, match: data});
   })
 });
 
@@ -41,7 +41,7 @@ router.post('/newMessage/:matchId/:userId', async (req, res) => {
         });
       
         // newMessage.save().then((newDoc) => {
-          Match.updateOne({matchId: matchId}, {$push: {messages: newMessage}})
+          Match.updateOne({_id: matchId}, {$push: {messages: newMessage}})
           .then(()=> {
              res.json({ result: true, message: 'message added'});
           })
