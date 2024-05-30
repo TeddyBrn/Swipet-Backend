@@ -32,11 +32,11 @@ router.post('/addanimal/:token', async (req, res) => {
     });
 
     const savedAnimal = await newAnimal.save();
-
+    console.log(savedAnimal._id)
     // Mise à jour du profil utilisateur
     await Profil.updateOne(
-      { token: userId },
-      { $push: { profilAnimal: {id :savedAnimal._id} } },
+      { token: 'ZFk5mLZUhux7V6OBhbQNlQ9GQUj0bKCG' },
+      { $push: { profilAnimal: savedAnimal._id } },
       { new: true }
     );
     if (!Profil) {

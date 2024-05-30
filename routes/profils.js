@@ -17,12 +17,12 @@ router.post('/signup', (req, res) => {
   if (
     !checkBody(req.body, [
       'firstname',
-      'lastname',
       'email',
       'age',
       'password',
       'role',
-      'city'
+      'city',
+      'bio'
     ])
   ) {
     res.json({ result: false, error: 'Missing or empty fields' });
@@ -53,8 +53,9 @@ router.post('/signup', (req, res) => {
                   lastname: req.body.lastname,
                   email: req.body.email,
                   city: req.body.city,
-                  // birthDate: req.body.birthDate,
+                  age: req.body.age,
                   role: req.body.role,
+                  bio: req.body.bio,
                   password: hash,
                   token: uid2(32),
                   photo: url || ''
@@ -77,8 +78,9 @@ router.post('/signup', (req, res) => {
           lastname: req.body.lastname,
           email: req.body.email,
           city: req.body.city,
-          // birthDate: req.body.birthDate,
+          age: req.body.age,
           role: req.body.role,
+          bio: req.body.bio,
           password: hash,
           token: uid2(32)
         });
