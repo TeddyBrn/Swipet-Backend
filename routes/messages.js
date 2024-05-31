@@ -34,6 +34,7 @@ router.post('/newMessage/:matchId/:userId', async (req, res) => {
       };
 
       const newMessage = new Message({
+        // tokenAuthor: "0kcmX1WEDbcV2eUrOpPk5c3XSKw6PXRq",
         tokenAuthor: req.params.userId,
         content: req.body.content,
         created_at: new Date,

@@ -8,7 +8,7 @@ const AnimalSchema = mongoose.Schema({
       enum: ["Chien", "Chat", "Lapin", "Hamster"],
       required: true,
     },
-    gender: { type: String, enum: ["Male", "Female"], required: true },
+    gender: { type: String, enum: ["Mâle", "Femelle"], required: true },
     bio: String,
     detail: String,
     photoUrl: String,
