@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const messageSchema = mongoose.Schema({
-    // namePetsitter: ,
+    tokenAuthor: String,
     content: String,
     created_at: Date,
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'profils' }
